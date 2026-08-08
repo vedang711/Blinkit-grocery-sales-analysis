@@ -1,0 +1,75 @@
+-- Blinkit Grocery Sales Analysis | Power BI measures
+
+Total Orders = DISTINCTCOUNT(DimOrder[order_id])
+
+Total Sales = SUM(DimOrder[order_total])
+
+Average Order Value = DIVIDE([Total Sales], [Total Orders], 0)
+
+Active Customers = DISTINCTCOUNT(DimOrder[customer_id])
+
+Repeat Customers =
+COUNTROWS(
+    FILTER(
+        VALUES(DimOrder[customer_id]),
+        CALCULATE([Total Orders]) > 1
+    )
+)
+
+Repeat Customer Rate % = DIVIDE([Repeat Customers], [Active Customers], 0)
+
+Item Sales = SUM(FactOrderItems[line_sales])
+
+Units Sold = SUM(FactOrderItems[quantity])
+
+Estimated Gross Margin =
+SUMX(
+    FactOrderItems,
+    FactOrderItems[line_sales] * RELATED(DimProduct[margin_percentage]) / 100
+)
+
+Estimated Gross Margin % = DIVIDE([Estimated Gross Margin], [Item Sales], 0)
+
+On-Time Orders =
+CALCULATE(
+    COUNTROWS(FactDelivery),
+    FactDelivery[delivery_status] = "On Time"
+)
+
+On-Time Rate % = DIVIDE([On-Time Orders], COUNTROWS(FactDelivery), 0)
+
+Average Delivery Variance (min) = AVERAGE(FactDelivery[delivery_variance_minutes])
+
+Delayed Orders =
+CALCULATE(
+    COUNTROWS(FactDelivery),
+    FactDelivery[delivery_variance_minutes] > 0
+)
+
+Average Rating = AVERAGE(FactCustomerFeedback[rating])
+
+Negative Feedback % =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(FactCustomerFeedback),
+        FactCustomerFeedback[sentiment] = "Negative"
+    ),
+    COUNTROWS(FactCustomerFeedback),
+    0
+)
+
+Marketing Spend = SUM(FactMarketing[spend])
+
+Marketing Revenue = SUM(FactMarketing[revenue_generated])
+
+Marketing ROAS = DIVIDE([Marketing Revenue], [Marketing Spend], 0)
+
+Marketing CTR % = DIVIDE(SUM(FactMarketing[clicks]), SUM(FactMarketing[impressions]), 0)
+
+Conversion Rate % = DIVIDE(SUM(FactMarketing[conversions]), SUM(FactMarketing[clicks]), 0)
+
+Stock Received = SUM(FactInventory[stock_received])
+
+Damaged Stock = SUM(FactInventory[damaged_stock])
+
+Damage Rate % = DIVIDE([Damaged Stock], [Stock Received], 0)

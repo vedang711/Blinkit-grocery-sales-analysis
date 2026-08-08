@@ -1,0 +1,2 @@
+orders,total_sales,average_order_value,active_customers,repeat_customer_rate_pct,item_level_sales,delivery_status_on_time_pct,marketing_weighted_roas,inventory_damage_rate_pct,avg_feedback_rating
+5000,11009308.5,2201.8617,2172,68.69244935543279,4972415.43,69.39999999999999,1.9726548080050088,54.40939224272332,3.3444
